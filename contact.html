@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Vorldx Adgorithm Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="contact">
+  <div id="nav"></div>
+
+  <section class="page-head">
+    <div class="container">
+      <h1>Contact Us</h1>
+      <p>Let's build something amazing together</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- Left: contact info -->
+        <div class="contact-info reveal">
+          <div class="info-row">
+            <div class="ic">✉</div>
+            <div><h4>Email</h4><p>hello@vorldxadgorithm.com</p></div>
+          </div>
+          <div class="info-row">
+            <div class="ic">📞</div>
+            <div><h4>Phone</h4><p>+91 98765 43210</p></div>
+          </div>
+          <div class="info-row">
+            <div class="ic">📍</div>
+            <div><h4>Location</h4><p>India · Remote Worldwide</p></div>
+          </div>
+          <div class="info-row">
+            <div class="ic">🕒</div>
+            <div><h4>Working Hours</h4><p>Mon – Sat, 9am – 7pm IST</p></div>
+          </div>
+        </div>
+
+        <!-- Right: the working form -->
+        <div class="form-card reveal">
+          <div class="form-msg" id="formMsg"></div>
+          <form id="contactForm" novalidate>
+            <div class="form-row">
+              <div class="field">
+                <label for="name">Your Name *</label>
+                <input type="text" id="name" name="name" placeholder="John Doe">
+                <span class="err">Please enter your name.</span>
+              </div>
+              <div class="field">
+                <label for="email">Your Email *</label>
+                <input type="email" id="email" name="email" placeholder="john@email.com">
+                <span class="err">Please enter a valid email.</span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="company">Company Name</label>
+                <input type="text" id="company" name="company" placeholder="Your company">
+              </div>
+              <div class="field">
+                <label for="type">Project Type</label>
+                <select id="type" name="type">
+                  <option value="">Select...</option>
+                  <option>Content Creation</option>
+                  <option>AI Automation</option>
+                  <option>Branding</option>
+                  <option>Growth Marketing</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="budget">Budget Range</label>
+              <select id="budget" name="budget">
+                <option value="">Select...</option>
+                <option>Under $1,000</option>
+                <option>$1,000 – $5,000</option>
+                <option>$5,000 – $10,000</option>
+                <option>$10,000+</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="message">Your Message *</label>
+              <textarea id="message" name="message" placeholder="Tell us about your project..."></textarea>
+              <span class="err">Please enter a message.</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Send Message</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Captured submissions table (proof the info is collected) -->
+      <div class="submissions reveal">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <h3>Captured Messages</h3>
+          <button class="btn btn-outline" onclick="clearSubmissions()" style="padding:8px 16px">Clear All</button>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Name</th><th>Email</th><th>Project</th><th>Message</th></tr>
+          </thead>
+          <tbody id="submissionsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick promises -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="perks">
+        <div class="perk reveal"><div class="ic">⚡</div><h4>Fast Reply</h4><p>We respond within 24 hours.</p></div>
+        <div class="perk reveal"><div class="ic">🎯</div><h4>Free Consultation</h4><p>No cost, no pressure.</p></div>
+        <div class="perk reveal"><div class="ic">🔒</div><h4>Your Data Is Safe</h4><p>We never share your info.</p></div>
+        <div class="perk reveal"><div class="ic">🌍</div><h4>Work Worldwide</h4><p>Clients across the globe.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" style="background:var(--bg-light)">
+    <div class="container">
+      <div class="section-head reveal"><span class="eyebrow">Questions?</span><h2>Frequently Asked</h2></div>
+      <div class="faq reveal">
+        <div class="faq-item">
+          <button class="faq-q">How soon can you start my project? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Usually within a few days of our first call. We'll give you a clear timeline once we understand your goals.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How much do your services cost? <span class="plus">+</span></button>
+          <div class="faq-a"><p>It depends on your needs. Pick a budget range in the form and we'll suggest the best plan — the first consultation is always free.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Do you work with small businesses and startups? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Yes! We work with brands of every size and tailor our approach to fit your stage and budget.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Which platforms and tools do you use? <span class="plus">+</span></button>
+          <div class="faq-a"><p>We work across all major social, ad and automation platforms, plus the latest AI tools — always choosing what fits your goals best.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+  <script src="js/background.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/contact.js"></script>
+</body>
+</html>
