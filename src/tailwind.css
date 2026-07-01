@@ -1,0 +1,4 @@
+/* Tailwind utilities — preflight disabled so existing styles are safe */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

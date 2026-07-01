@@ -1,21 +1,14 @@
 /* =========================================================
-   components.js
-   Builds the SAME navbar + footer on every page so you only
-   edit them in ONE place. Each page sets <body data-page="home">
-   etc. — that name is used to highlight the active link.
+   components.js — shared navbar + footer on every page
    ========================================================= */
 
-// Apply the saved theme (dark/light) immediately to avoid a flash
 document.documentElement.setAttribute(
   'data-theme', localStorage.getItem('vorldx_theme') || 'light'
 );
 
-// Brand logo (transparent). Light version for light backgrounds (navbar),
-// white-text version for dark backgrounds (footer).
-const LOGO_SVG = `<img class="logo" src="assets/logo.png" alt="Vorldx Adgorithm Lab logo">`;
+const LOGO_SVG   = `<img class="logo" src="assets/logo.png"       alt="Vorldx Adgorithm Lab logo">`;
 const LOGO_WHITE = `<img class="logo" src="assets/logo-white.png" alt="Vorldx Adgorithm Lab logo">`;
 
-// Pages in the top navigation (Portfolio removed on purpose)
 const NAV_ITEMS = [
   { name: 'Home',     file: 'index.html',    key: 'home' },
   { name: 'About',    file: 'about.html',    key: 'about' },
@@ -32,7 +25,7 @@ function buildNavbar() {
     .join('');
 
   return `
-  <nav class="navbar">
+  <nav class="navbar" id="mainNav">
     <div class="container nav-inner">
       <a href="index.html" class="brand">${LOGO_SVG}</a>
       <div class="nav-links" id="navLinks">${links}</div>
@@ -58,7 +51,7 @@ function buildFooter() {
           <p class="about">We combine creativity and AI to help brands grow faster and smarter in the digital world.</p>
           <div class="socials">
             <a href="#" aria-label="Facebook">f</a>
-            <a href="#" aria-label="Twitter">x</a>
+            <a href="#" aria-label="Twitter">𝕏</a>
             <a href="#" aria-label="Instagram">◎</a>
             <a href="#" aria-label="YouTube">▶</a>
           </div>
@@ -79,7 +72,7 @@ function buildFooter() {
         </div>
         <div class="news">
           <h5>Newsletter</h5>
-          <p style="font-size:.9rem">Subscribe for updates and insights.</p>
+          <p style="font-size:.9rem;color:#9aa6be">Subscribe for updates and insights.</p>
           <div class="row">
             <input type="email" placeholder="Enter your email" id="newsEmail">
             <button class="btn btn-primary" onclick="subscribeNews()">→</button>
@@ -91,30 +84,56 @@ function buildFooter() {
   </footer>`;
 }
 
-// Simple newsletter handler (demo)
 function subscribeNews() {
   const el = document.getElementById('newsEmail');
-  if (el && el.value.includes('@')) { alert('Thanks for subscribing, ' + el.value + '!'); el.value = ''; }
-  else { alert('Please enter a valid email.'); }
+  if (el && el.value.includes('@')) {
+    alert('Thanks for subscribing, ' + el.value + '!');
+    el.value = '';
+  } else {
+    alert('Please enter a valid email.');
+  }
 }
 
-// Inject nav + footer as soon as the page loads
 document.addEventListener('DOMContentLoaded', () => {
-  const navMount = document.getElementById('nav');
+  const navMount  = document.getElementById('nav');
   const footMount = document.getElementById('footer');
-  if (navMount) navMount.innerHTML = buildNavbar();
+  if (navMount)  navMount.innerHTML  = buildNavbar();
   if (footMount) footMount.innerHTML = buildFooter();
 
-  // Mobile hamburger toggle
+  // Mobile hamburger
   const burger = document.getElementById('hamburger');
-  const links = document.getElementById('navLinks');
-  if (burger && links) burger.addEventListener('click', () => links.classList.toggle('open'));
+  const links  = document.getElementById('navLinks');
+  if (burger && links) {
+    burger.addEventListener('click', () => {
+      links.classList.toggle('open');
+      // Animate hamburger to X
+      const spans = burger.querySelectorAll('span');
+      if (links.classList.contains('open')) {
+        spans[0].style.cssText = 'transform:rotate(45deg) translate(5px,5px)';
+        spans[1].style.cssText = 'opacity:0;transform:scaleX(0)';
+        spans[2].style.cssText = 'transform:rotate(-45deg) translate(5px,-5px)';
+      } else {
+        spans.forEach(s => s.style.cssText = '');
+      }
+    });
+  }
+
+  // Navbar shrink on scroll
+  const nav = document.getElementById('mainNav');
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        nav.style.boxShadow = '0 2px 24px rgba(0,0,0,.12)';
+      } else {
+        nav.style.boxShadow = '';
+      }
+    }, { passive: true });
+  }
 
   // Dark / light theme toggle
   const toggle = document.getElementById('themeToggle');
   if (toggle) {
     const navLogo = document.querySelector('.navbar .brand .logo');
-    // keep the icon + navbar logo in sync with the current theme
     const updateUI = () => {
       const dark = document.documentElement.getAttribute('data-theme') === 'dark';
       toggle.textContent = dark ? '☀️' : '🌙';
