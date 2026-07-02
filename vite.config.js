@@ -13,4 +13,10 @@ export default defineConfig({
   server: {
     open: true,
   },
+  build: {
+    // react-snap prerenders with an old bundled Chromium that doesn't
+    // understand optional chaining / nullish coalescing (ES2020+).
+    // Target ES2017 so the prerender crawl doesn't throw a SyntaxError.
+    target: 'es2017',
+  },
 })

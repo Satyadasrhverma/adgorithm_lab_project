@@ -7,6 +7,9 @@ export default function VantaBg({ children, className = '', style = {} }) {
   const effectRef = useRef(null)
 
   useEffect(() => {
+    // Skip WebGL init during the react-snap prerender crawl — its bundled
+    // headless Chromium can't reliably initialize WebGL and hangs the crawl.
+    if (navigator.userAgent === 'ReactSnap') return
     if (!effectRef.current && containerRef.current) {
       effectRef.current = WAVES({
         el: containerRef.current,

@@ -5,6 +5,9 @@ export default function HeroAnimation({ className, style }) {
   const mountRef = useRef(null)
 
   useEffect(() => {
+    // Skip WebGL init during the react-snap prerender crawl — its bundled
+    // headless Chromium can't reliably initialize WebGL and hangs the crawl.
+    if (navigator.userAgent === 'ReactSnap') return
     const el = mountRef.current
     if (!el) return
 

@@ -26,7 +26,6 @@
       "/careers",
       "/contact"
     ],
-    "puppeteerExecutablePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     "skipThirdPartyRequests": true,
     "maxConcurrentRoutes": 1
   },
