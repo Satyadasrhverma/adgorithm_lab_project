@@ -106,7 +106,7 @@ export default function About() {
               transition={{ duration: 0.6 }}
             >
               <span className="eyebrow">About Us</span>
-              <h1 style={{ fontSize: '2.4rem', fontWeight: 800, lineHeight: 1.2 }}>
+              <h1 style={{ fontSize: 'clamp(1.9rem, 5vw, 2.4rem)', fontWeight: 800, lineHeight: 1.2 }}>
                 We're a team of <span className="gradient-text">innovators</span>,<br />
                 creators and problem solvers.
               </h1>
