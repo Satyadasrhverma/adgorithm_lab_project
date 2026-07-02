@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && react-snap",
+    "build": "vite build",
+    "build:prerender": "vite build && react-snap",
     "preview": "vite preview"
   },
   "reactSnap": {

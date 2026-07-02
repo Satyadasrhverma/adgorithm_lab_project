@@ -13,6 +13,7 @@ import Pricing from './pages/Pricing'
 import Blog from './pages/Blog'
 import Careers from './pages/Careers'
 import Contact from './pages/Contact'
+import NotFound from './pages/NotFound'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="/blog"     element={<Blog />} />
           <Route path="/careers"  element={<Careers />} />
           <Route path="/contact"  element={<Contact />} />
+          <Route path="*"         element={<NotFound />} />
         </Routes>
       </AnimatePresence>
       <Footer />
