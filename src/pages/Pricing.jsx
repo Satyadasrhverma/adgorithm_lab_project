@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import SEO from '../components/SEO'
+import PlanIcon from '../components/PlanIcon'
 
 const WHY = {
   Starter:  'Perfect for new brands or small businesses that want to establish a consistent online presence without a big commitment. You get real content, real posting and a team behind you.',
@@ -49,7 +50,7 @@ function PricingModal({ plan, onClose }) {
         {/* Header */}
         <div className="plan-modal-header" style={{ background: plan.gradient }}>
           <button className="modal-close plan-modal-close" onClick={onClose} aria-label="Close">✕</button>
-          <div className="plan-modal-icon">{plan.icon}</div>
+          <div className="plan-modal-icon"><PlanIcon plan={plan.name} size={30} /></div>
           <div className="plan-modal-title-group">
             <h2 className="plan-modal-name">{plan.name} Plan</h2>
             <div className="plan-modal-price">
@@ -401,7 +402,7 @@ export default function Pricing() {
 
                 {/* Top */}
                 <div className="pricing-top">
-                  <div className="pricing-icon" style={{ background: plan.gradient }}>{plan.icon}</div>
+                  <div className="pricing-icon" style={{ background: plan.gradient }}><PlanIcon plan={plan.name} size={26} /></div>
                   <h3 className="pricing-name">{plan.name}</h3>
                   <div className="pricing-price">
                     <span className="pricing-currency">₹</span>

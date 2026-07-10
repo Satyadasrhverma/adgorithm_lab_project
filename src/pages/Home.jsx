@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import React, { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useModal } from '../context/ModalContext'
 import { SERVICES_LIST } from '../data/cards'
@@ -32,42 +32,15 @@ const STATS = [
 ]
 
 const PROCESS = [
-  {
-    n: '01', title: 'Discovery', color: '#6366f1', icon: '🔍',
-    desc: 'Understand your brand, goals and audience deeply.',
-    why: 'Without deep discovery, campaigns miss the mark. We study your brand DNA, audience psychology and competitive landscape so every move is intentional.',
-    how: 'Brand audit → Audience persona mapping → Competitor gap analysis → Goal alignment session',
-  },
-  {
-    n: '02', title: 'Strategy', color: '#06b6d4', icon: '🗺️',
-    desc: 'Research competitors and plan a clear roadmap.',
-    why: 'Strategy is the difference between random content and a content machine. We build data-backed plans that tie every action to measurable growth.',
-    how: 'Market research → Content calendar → Channel selection → KPI framework',
-  },
-  {
-    n: '03', title: 'Creation', color: '#a855f7', icon: '✏️',
-    desc: 'Design, write and produce high-quality content.',
-    why: 'Great content is the engine of every campaign. Our creative team blends design, copy and video to build assets that stop the scroll and drive action.',
-    how: 'Script & brief → Design & production → Review cycles → Asset delivery',
-  },
-  {
-    n: '04', title: 'AI Enhancement', color: '#3b82f6', icon: '🤖',
-    desc: 'Automate workflows and amplify output with AI.',
-    why: 'AI lets us do in hours what used to take weeks — personalisation at scale, auto-optimised copy, and workflow automation that frees your team.',
-    how: 'Tool audit → Prompt engineering → Workflow automation → AI-assisted A/B testing',
-  },
-  {
-    n: '05', title: 'Distribution', color: '#f59e0b', icon: '🚀',
-    desc: 'Launch strategically across all relevant channels.',
-    why: 'The best content goes unseen without smart distribution. We pick the right channels, right times and right formats to maximise reach and relevance.',
-    how: 'Channel mapping → Scheduling → Paid amplification → Cross-platform repurposing',
-  },
-  {
-    n: '06', title: 'Analytics', color: '#10b981', icon: '📊',
-    desc: 'Track results, iterate fast and continuously grow.',
-    why: 'Growth is a loop, not a launch. We track every metric that matters, find what\'s working, cut what\'s not and compound gains month over month.',
-    how: 'Dashboard setup → Weekly reporting → Insight extraction → Strategy iteration',
-  },
+  { n: 'A', title: 'Assets',    color: '#6366f1', desc: 'We audit your business, market and competitors.' },
+  { n: 'D', title: 'Design',    color: '#06b6d4', desc: 'We create a data-driven strategy and AI roadmap.' },
+  { n: 'G', title: 'Generate',  color: '#a855f7', desc: 'We build content, websites, AI tools and campaigns.' },
+  { n: 'O', title: 'Optimize',  color: '#3b82f6', desc: 'We refine and optimize for better performance.' },
+  { n: 'R', title: 'Reach',     color: '#f59e0b', desc: 'We launch multi-channel campaigns to reach your audience.' },
+  { n: 'I', title: 'Innovate',  color: '#ec4899', desc: 'We implement AI, automation and smart solutions.' },
+  { n: 'T', title: 'Track',     color: '#10b981', desc: 'We track KPIs and measure what matters.' },
+  { n: 'H', title: 'Hypergrow', color: '#ef4444', desc: 'We scale your growth with advanced strategies.' },
+  { n: 'M', title: 'Multiply',  color: '#14b8a6', desc: 'We multiply results through continuous optimization.' },
 ]
 
 const BRANDS = ['Google', 'Microsoft', 'Airbnb', 'HubSpot', 'Slack', 'Notion', 'Figma', 'Stripe']
@@ -118,7 +91,6 @@ const HERO_WORDS = ['Where', 'Creativity', 'Meets']
 
 export default function Home() {
   const { openModal } = useModal()
-  const [activeStep, setActiveStep] = useState(null)
   const { scrollY } = useScroll()
   const heroY    = useTransform(scrollY, [0, 400], [0, -60])
   const heroArtY = useTransform(scrollY, [0, 400], [0, 35])
@@ -325,33 +297,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── PROCESS ── */}
+      {/* ── PROCESS ── The Adgorithm Framework™ */}
       <section className="section">
         <div className="container">
           <div className="section-head">
-            <span className="eyebrow">Our Process</span>
-            <h2>How We Work</h2>
+            <span className="eyebrow eyebrow-lg">Our Proven Process</span>
+            <h2>The Adgorithm Framework&trade;</h2>
+            <p>A step-by-step AI-powered growth system that transforms businesses from strategy to scale.</p>
           </div>
 
-          {/* Horizontal flow bar */}
+          {/* Compact letter ladder — spells A·D·G·O·R·I·T·H·M */}
           <div className="process-flow">
-            {/* Single continuous neon rail + comet */}
+            {/* Single continuous neon rail + comet that pops each icon as it passes */}
             <div className="pflow-rail"><span className="pflow-comet" /></div>
 
-            {PROCESS.map(({ n, title, color, icon }, i) => (
+            {PROCESS.map(({ n, title, color, desc }, i) => (
               <motion.div
                 key={n}
-                className={`pflow-node${activeStep === i ? ' pflow-node--active' : ''}`}
+                className="pflow-node"
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.4 }}
-                transition={{ delay: i * 0.07, duration: 0.45 }}
-                onClick={() => setActiveStep(activeStep === i ? null : i)}
-                style={{ cursor: 'pointer' }}
+                transition={{ delay: i * 0.06, duration: 0.45 }}
+                style={{ borderColor: color + '30' }}
               >
-                <div className="pflow-ring-wrap" style={{ '--nc': color }}>
-                  <div className="pflow-icon-wrap" style={{ background: color + '18' }}>
-                    {icon}
+                <div
+                  className="pflow-ring-wrap"
+                  style={{
+                    '--nc': color,
+                    '--pop-delay': `${0.36 + (i / (PROCESS.length - 1)) * 5.28}s`,
+                  }}
+                >
+                  <div className="pflow-icon-wrap" style={{ color }}>
+                    {n}
                   </div>
                 </div>
                 <span
@@ -360,85 +338,7 @@ export default function Home() {
                 >
                   {title}
                 </span>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Step detail popup */}
-          <AnimatePresence>
-            {activeStep !== null && (() => {
-              const s = PROCESS[activeStep]
-              return (
-                <motion.div
-                  key={activeStep}
-                  className="pflow-detail"
-                  style={{ borderColor: s.color + '44', background: s.color + '0c' }}
-                  initial={{ opacity: 0, y: -12, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: -8, height: 0 }}
-                  transition={{ duration: 0.3, ease: [0.2, 0.8, 0.3, 1] }}
-                >
-                  <div className="pflow-detail-inner">
-                    <div className="pflow-detail-icon" style={{ background: s.color + '22', color: s.color }}>
-                      {s.icon}
-                    </div>
-                    <div>
-                      <h4 style={{ color: s.color }}>{s.n} — {s.title}</h4>
-                      <div className="pflow-detail-row">
-                        <div>
-                          <span className="pflow-detail-label">WHY</span>
-                          <p>{s.why}</p>
-                        </div>
-                        <div>
-                          <span className="pflow-detail-label">HOW</span>
-                          <p className="pflow-detail-how">{s.how}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      className="pflow-detail-close"
-                      onClick={() => setActiveStep(null)}
-                      aria-label="Close"
-                    >✕</button>
-                  </div>
-                </motion.div>
-              )
-            })()}
-          </AnimatePresence>
-
-          {/* Detail cards grid */}
-          <div className="process-grid">
-            {PROCESS.map(({ n, title, desc, color }, i) => (
-              <motion.div
-                key={n}
-                className="pstep"
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ delay: i * 0.07, duration: 0.5 }}
-                whileHover={{
-                  y: -7,
-                  boxShadow: `0 28px 64px ${color}28`,
-                  borderColor: color + '55',
-                }}
-                style={{
-                  background: `linear-gradient(145deg, ${color}13 0%, var(--surface) 62%)`,
-                  borderColor: color + '28',
-                }}
-              >
-                <div
-                  className="ps-num"
-                  style={{
-                    background: `linear-gradient(135deg, ${color}cc, ${color}55)`,
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  {n}
-                </div>
-                <h4>{title}</h4>
-                <p>{desc}</p>
+                <div className="pflow-desc">{desc}</div>
               </motion.div>
             ))}
           </div>

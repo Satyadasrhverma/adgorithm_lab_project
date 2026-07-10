@@ -67,7 +67,6 @@
 [data-theme="dark"] .mvv .card { color: var(--text); }
 [data-theme="dark"] .bento-card { background: var(--surface); border-color: var(--border); }
 [data-theme="dark"] .bento-card h3 { color: var(--text); }
-[data-theme="dark"] .pstep h4 { color: var(--text); }
 [data-theme="dark"] .cursor-dot { background: var(--teal); }
 [data-theme="dark"] .cursor-ring { border-color: rgba(34, 211, 238, 0.5); }
 
@@ -78,7 +77,7 @@
 
 .card, .post, .perk, .job, .faq-item, .form-card, .service-detail, .featured,
 .cats button, .navbar, .step .dot, .field input, .field select, .field textarea,
-.bento-card, .pstep {
+.bento-card {
   transition: background-color .35s ease, color .35s ease, border-color .35s ease,
               transform .3s ease, box-shadow .3s ease;
 }
@@ -129,6 +128,7 @@ ul { list-style: none; }
   display: inline-block; font-size: 0.76rem; font-weight: 700; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--blue); margin-bottom: 12px;
 }
+.eyebrow-lg { font-size: 0.95rem; letter-spacing: 3px; margin-bottom: 16px; }
 
 /* =========================================================
    BUTTONS
@@ -174,10 +174,157 @@ ul { list-style: none; }
   border-bottom: 1px solid var(--border);
   transition: background .3s ease, border-color .3s ease;
 }
-.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 140px; }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
-.brand .logo { height: 128px; width: auto; object-fit: contain; transition: transform .3s ease; }
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between; height: 150px;
+  transition: height .35s cubic-bezier(.2,.8,.3,1);
+}
+.navbar--compact .nav-inner { height: 84px; }
+/* flex-shrink:0 — without it, Chromium's automatic-minimum-size calc for
+   this nested flex container (a width:auto/height:fixed <img> two levels
+   deep) collapses to 0 instead of the logo's real content size whenever
+   the navbar row is tight (roughly 641–1023px), making the logo vanish. */
+.brand { position: relative; display: flex; align-items: center; gap: 10px; font-weight: 800; flex-shrink: 0; }
+.brand .logo {
+  height: 144px; width: auto; object-fit: contain;
+  transition: transform .3s ease, height .35s cubic-bezier(.2,.8,.3,1);
+}
 .brand:hover .logo { transform: scale(1.06); }
+.navbar--compact .brand .logo { height: 66px; }
+
+/* Mascot beside the logo — a small crop+scale rig instead of just a bigger
+   <img>, so the character reads as a prominent illustration rather than a
+   tiny icon, without touching the source file or bloating layout:
+     .nav-mascot-scale  — positions it + applies the responsive scale() bump
+     .nav-mascot-float  — the gentle bob animation (own transform, isolated
+                          from the scale so the two never fight over the
+                          `transform` property on the same element)
+     .nav-mascot-crop   — fixed small window, overflow:hidden
+     .nav-mascot (img)  — object-fit: cover crops the wide source frame down
+                          to just the character, no image editing involved
+   Hidden below 1024px so it never competes with the mobile menu; 75% scale
+   on tablet; full size from 1440px up. Absolutely positioned throughout, so
+   it can never push or wrap the nav links. */
+.nav-mascot-scale {
+  display: none;
+  position: absolute; left: 100%; bottom: -26px; margin-left: 16px;
+  transform-origin: left bottom;
+  transform: scale(2.75); /* ~2.5–3x the crop window below */
+  pointer-events: none; z-index: 0;
+  transition: transform .35s cubic-bezier(.2,.8,.3,1);
+}
+.nav-mascot-float {
+  animation: navMascotFloat 4.5s ease-in-out infinite;
+}
+@keyframes navMascotFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+.nav-mascot-glow {
+  position: absolute; inset: -16px; z-index: -1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,.32) 0%, rgba(34,211,238,.16) 45%, transparent 72%);
+  filter: blur(10px);
+}
+.nav-mascot-crop {
+  position: relative;
+  width: 56px; height: 62px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.nav-mascot {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 50% 36%; /* biases the crop toward the character's face/shoulders */
+}
+/* Kept out of the navbar entirely (display:none, no breakpoint re-enables
+   it) — it used to force a hardcoded .nav-links margin-left:90px just to
+   avoid visually colliding with "Home", which was the root cause of the
+   left side being cramped at medium desktop widths. */
+
+/* Robot mascot — a standalone element pinned to the browser viewport itself
+   (position:fixed), NOT part of the navbar's box or flex layout at all. It
+   sits visually beside the navbar but is a completely independent layer, so
+   it can never affect navbar width/height/padding or push the CTA button.
+   Half of it simply sits past `right:0` — off past the edge of the browser
+   window — which the viewport itself clips, no overflow:hidden needed.
+
+     .nav-robot-fixed  — position:fixed, resting right offset + vertical
+                          alignment to the navbar center. pointer-events:none
+                          throughout (per spec) so it can never intercept a
+                          click meant for the navbar underneath it.
+     .nav-robot-slide  — Framer Motion controls ONLY the enter/exit slide (x).
+     .nav-robot-float  — CSS keyframes control ONLY the idle bob/tilt/blink.
+     .nav-robot (img)  — the mascot image itself, untouched/uncropped. */
+.nav-robot-fixed {
+  display: none;
+  position: fixed;
+  right: -4px;
+  top: 75px;
+  transform: translateY(-50%);
+  z-index: 9999;
+  pointer-events: none;
+  transition: top .35s cubic-bezier(.2,.8,.3,1);
+}
+.nav-robot-fixed.is-compact { top: 42px; }
+@media (min-width: 1100px) {
+  .nav-robot-fixed { display: block; }
+}
+@media (min-width: 1280px) {
+  .nav-robot-fixed { right: -6px; }
+}
+
+.nav-robot-slide { will-change: transform; }
+
+.nav-robot-float {
+  animation: navRobotFloat 7s ease-in-out infinite;
+}
+@keyframes navRobotFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); filter: brightness(1); }
+  20%      { transform: translateY(-2px) rotate(-2deg); }
+  40%      { transform: translateY(0) rotate(0deg); }
+  48%      { filter: brightness(1.35); }
+  52%      { filter: brightness(1); }
+  70%      { transform: translateY(2px) rotate(2deg); }
+  100%     { transform: translateY(0) rotate(0deg); }
+}
+
+.nav-robot {
+  height: 80px; width: auto; display: block;
+  filter: drop-shadow(0 6px 14px rgba(56,120,255,.35));
+}
+@media (min-width: 1280px) {
+  .nav-robot { height: 95px; }
+}
+
+/* Plays once right after the slide-in lands: tiny bounce + head tilt + a
+   quick brightness flick standing in for a single blink (flat PNG, no
+   separately riggable eye layer to blink on its own). */
+.nav-robot-settle {
+  animation: navRobotSettle .52s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes navRobotSettle {
+  0%   { transform: scale(1) rotate(0deg); filter: drop-shadow(0 6px 14px rgba(56,120,255,.35)) brightness(1); }
+  35%  { transform: scale(1.07) rotate(3deg); }
+  60%  { transform: scale(0.98) rotate(-3deg); filter: drop-shadow(0 6px 14px rgba(56,120,255,.35)) brightness(1.3); }
+  100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 6px 14px rgba(56,120,255,.35)) brightness(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-robot-float { animation: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-robot-float { animation: none; }
+}
+
+/* Scroll-progress hairline — reuses the site's signature multi-color gradient
+   (same stops as the Adgorithm rail) so it reads as one brand system, not a bolt-on */
+.nav-progress {
+  position: absolute; left: 0; bottom: -1px; height: 3px; width: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg,
+    #6366f1, #06b6d4, #a855f7, #f59e0b, #ec4899, #10b981, #ef4444, #14b8a6
+  );
+  transition: transform .12s linear;
+  pointer-events: none; z-index: 2;
+}
 .brand small { display: block; font-size: .58rem; letter-spacing: 2px; color: #3a3a3a; font-weight: 700; }
 .brand .name { font-size: 1.15rem; line-height: 1; color: #16a085; letter-spacing: 1px; }
 .footer-brand .logo { height: 76px; }
@@ -192,21 +339,34 @@ ul { list-style: none; }
   background: var(--blue); border-radius: 2px; transition: width .25s ease;
 }
 .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
-.nav-links a:nth-child(1):hover { color: #6366f1; }
-.nav-links a:nth-child(2):hover { color: #16a085; }
-.nav-links a:nth-child(3):hover { color: #a855f7; }
-.nav-links a:nth-child(4):hover { color: #f59e0b; }
-.nav-links a:nth-child(5):hover { color: #ec4899; }
-.nav-links a:nth-child(6):hover { color: #06b6d4; }
-.nav-links a.active { color: var(--blue); }
+/* Hover/active colors are now driven inline from each NAV_ITEMS.accent (Navbar.jsx) */
+
+/* Small glowing dot under the active page's link — always visible, not just on hover */
+.nav-active-dot {
+  position: absolute; left: 50%; bottom: -9px; transform: translateX(-50%);
+  width: 5px; height: 5px; border-radius: 50%;
+  animation: navDotPulse 2.2s ease-in-out infinite;
+}
+@keyframes navDotPulse {
+  0%, 100% { box-shadow: 0 0 4px currentColor; opacity: .7; }
+  50%       { box-shadow: 0 0 11px currentColor; opacity: 1; }
+}
+
 .nav-cta { display: flex; align-items: center; gap: 16px; }
+/* Robot mascot (.nav-robot-fixed) is fixed to the *viewport* edge, so
+   between 1100–1300px the centered 1180px container doesn't yet have
+   enough side margin to clear the "Let's Talk" button on its own. Reserve
+   real space for it instead of letting it overlap. */
+@media (min-width: 1100px) and (max-width: 1300px) {
+  .nav-cta { padding-right: 44px; }
+}
 .theme-toggle {
   width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 1.1rem;
   background: var(--chip-bg); border: 1px solid var(--border); color: var(--text);
   display: flex; align-items: center; justify-content: center; transition: transform .3s ease, background .3s;
 }
 .theme-toggle:hover { transform: rotate(20deg) scale(1.12); }
-.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
 .hamburger span { width: 24px; height: 2px; background: #374151; border-radius: 2px; transition: .3s; }
 
 /* =========================================================
@@ -305,7 +465,7 @@ ul { list-style: none; }
 .hero-3d-wrap {
   position: relative;
   width: 100%;
-  height: 480px;
+  height: clamp(280px, 38vw, 480px);
 }
 .hero-3d-wrap canvas { display: block; }
 
@@ -498,16 +658,17 @@ ul { list-style: none; }
 /* Legacy stats (used in about.html) */
 .stats { background: var(--navy-800); color: var(--white); border-radius: 18px; }
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center; padding: 46px 24px; }
-.stat h3 { font-size: 2.4rem; font-weight: 800; }
+.stat h3 { font-size: clamp(1.8rem, 5vw, 2.4rem); font-weight: 800; }
 .stat p { color: #9fb0d0; font-size: .92rem; }
 
 /* =========================================================
    PROCESS FLOW (Home — How We Work)
    ========================================================= */
 .process-flow {
-  display: flex; align-items: flex-start;
-  position: relative; overflow: hidden;
-  padding: 32px 20px 22px;
+  display: flex; align-items: stretch; flex-wrap: wrap;
+  justify-content: center; gap: 20px 8px;
+  position: relative;
+  padding: 36px 24px 30px;
   background: var(--bg-light); border-radius: 20px;
   border: 1px solid var(--border);
 }
@@ -515,23 +676,25 @@ ul { list-style: none; }
 /* Single continuous neon rail */
 .pflow-rail {
   position: absolute;
-  top: 65px; /* 32px padding-top + 33px (half ring-wrap) */
+  top: 87px; /* 36px section pad-top + 18px card pad-top + 33px (half ring-wrap) */
   left: 0; right: 0; height: 2px; z-index: 0;
   background: linear-gradient(90deg,
-    rgba(99,102,241,.25) 0%, rgba(6,182,212,.25) 20%,
-    rgba(168,85,247,.25) 40%, rgba(59,130,246,.25) 60%,
-    rgba(245,158,11,.25) 80%, rgba(16,185,129,.25) 100%
+    rgba(99,102,241,.25) 0%, rgba(6,182,212,.2) 12.5%,
+    rgba(168,85,247,.25) 25%, rgba(59,130,246,.2) 37.5%,
+    rgba(245,158,11,.25) 50%, rgba(236,72,153,.2) 62.5%,
+    rgba(16,185,129,.25) 75%, rgba(239,68,68,.2) 87.5%,
+    rgba(20,184,166,.25) 100%
   );
 }
 
-/* Single comet sweeping the whole rail */
+/* Single comet sweeping the whole rail — the "arrow" that pops each icon as it passes */
 .pflow-comet {
   position: absolute;
   top: -1px; left: -80px;
   width: 80px; height: 4px; border-radius: 2px;
   background: linear-gradient(90deg, transparent, var(--teal), #fff, var(--teal), transparent);
   box-shadow: 0 0 14px var(--teal), 0 0 5px #fff;
-  animation: cometMove 3s ease-in-out infinite;
+  animation: cometMove 6s ease-in-out infinite;
 }
 @keyframes cometMove {
   0%  { left: -80px; opacity: 0; }
@@ -540,102 +703,59 @@ ul { list-style: none; }
   100%{ left: 100%; opacity: 0; }
 }
 
-/* Each step node */
+/* Each step node — its own card so every step reads as a distinct unit */
 .pflow-node {
-  flex: 1; min-width: 0;
+  flex: 0 1 auto; width: 112px; min-width: 0; box-sizing: border-box;
   display: flex; flex-direction: column; align-items: center; text-align: center;
   position: relative; z-index: 1;
-  transition: transform .25s ease;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 18px 8px 16px;
+  transition: transform .25s ease, box-shadow .3s ease;
 }
-.pflow-node:hover { transform: translateY(-3px); }
-.pflow-node--active .pflow-tab { box-shadow: 0 0 10px var(--teal); }
+.pflow-node:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
 
-/* Outer ring wrapper — lightweight glow pulse (no conic-gradient) */
+/* Outer ring wrapper — flat solid ring, no glow/blur so it reads the same on light or dark */
 .pflow-ring-wrap {
   position: relative;
   width: 66px; height: 66px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   border: 2px solid var(--nc, #22d3ee);
-  animation: ringPulse 2.4s ease-in-out infinite;
-  will-change: box-shadow;
+  animation: iconPop 6s ease-in-out infinite;
+  animation-delay: var(--pop-delay, 0s);
+  will-change: transform;
 }
-@keyframes ringPulse {
-  0%, 100% { box-shadow: 0 0 5px var(--nc, #22d3ee), 0 0 10px var(--nc, #22d3ee); opacity: .65; }
-  50%       { box-shadow: 0 0 12px var(--nc, #22d3ee), 0 0 28px var(--nc, #22d3ee); opacity: 1; }
+/* Pops the icon the instant the comet arrives, synced via --pop-delay */
+@keyframes iconPop {
+  0%   { transform: scale(1); border-color: var(--nc, #22d3ee); }
+  6%   { transform: scale(1.28); border-color: var(--nc, #22d3ee); }
+  18%  { transform: scale(1); }
+  100% { transform: scale(1); }
 }
 
-/* Inner icon circle (sits above ring, background hides centre of conic) */
+/* Inner letter circle (sits above ring) — always dark + identical size for every letter */
 .pflow-icon-wrap {
   position: relative; z-index: 1;
-  width: 62px; height: 62px; border-radius: 50%;
+  width: 60px; height: 60px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.55rem;
+  font-size: 1.5rem; font-weight: 800; line-height: 1;
+  background: var(--navy-900);
 }
 
 /* Tab label */
 .pflow-tab {
   display: inline-block; margin-top: 12px; padding: 4px 11px;
   border-radius: 20px; border: 1px solid;
-  font-size: .68rem; font-weight: 700; letter-spacing: .04em;
+  font-size: .7rem; font-weight: 700; letter-spacing: .03em;
   text-transform: uppercase; white-space: nowrap;
   transition: box-shadow .3s ease;
 }
 
-/* Step detail popup */
-.pflow-detail {
-  margin-top: 14px; border-radius: 16px; border: 1px solid;
-  overflow: hidden;
+/* One-line-ish description under each letter, its own div per step */
+.pflow-desc {
+  margin-top: 10px; font-size: .72rem; line-height: 1.5;
+  color: var(--text-soft);
 }
-.pflow-detail-inner {
-  display: flex; align-items: flex-start; gap: 18px; padding: 20px 22px;
-  position: relative;
-}
-.pflow-detail-icon {
-  width: 44px; height: 44px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem; flex-shrink: 0;
-}
-.pflow-detail-inner h4 { font-size: 1rem; font-weight: 800; margin-bottom: 10px; }
-.pflow-detail-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.pflow-detail-label {
-  display: block; font-size: .65rem; font-weight: 800;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text-soft); margin-bottom: 5px;
-}
-.pflow-detail-inner p { font-size: .85rem; color: var(--text-soft); line-height: 1.65; }
-.pflow-detail-how { font-family: inherit; }
-.pflow-detail-close {
-  position: absolute; top: 14px; right: 14px;
-  width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border);
-  background: var(--surface); color: var(--text-soft);
-  font-size: .8rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: background .2s, color .2s;
-}
-.pflow-detail-close:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
-
-/* =========================================================
-   PROCESS GRID — detail cards below the flow bar (Home)
-   ========================================================= */
-.process-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  margin-top: 48px;
-}
-.pstep {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 20px; padding: 30px; position: relative; overflow: hidden;
-  transition: transform .32s cubic-bezier(.2,.8,.3,1.1), box-shadow .32s ease, border-color .3s ease;
-}
-.pstep:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 24px 56px rgba(99,102,241,.14);
-  border-color: rgba(99,102,241,.3);
-}
-.ps-num {
-  font-size: 3rem; font-weight: 900; line-height: 1; margin-bottom: 16px;
-}
-.pstep h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
-.pstep p { color: var(--text-soft); font-size: .88rem; line-height: 1.65; }
 
 /* =========================================================
    HOW WE WORK — legacy (steps, used in services.html)
@@ -757,7 +877,7 @@ ul { list-style: none; }
   color: #fff; padding: 6px 14px; border-radius: 20px; font-size: .78rem; backdrop-filter: blur(6px); }
 .featured .txt { padding: 40px; display: flex; flex-direction: column; justify-content: center; }
 .featured .txt .meta { color: var(--text-soft); font-size: .82rem; margin-bottom: 12px; }
-.featured .txt h2 { font-size: 1.8rem; line-height: 1.2; margin-bottom: 14px; }
+.featured .txt h2 { font-size: clamp(1.35rem, 3.2vw, 1.8rem); line-height: 1.2; margin-bottom: 14px; }
 .featured .txt p { color: var(--text-soft); margin-bottom: 22px; }
 .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
 .post { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
@@ -949,14 +1069,12 @@ ul { list-style: none; }
    ========================================================= */
 @media (max-width: 1024px) {
   .bento { grid-template-columns: repeat(2, 1fr); }
-  .process-grid { grid-template-columns: repeat(2, 1fr); }
-  .pflow-detail-row { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 960px) {
   .cards, .stats-grid, .mvv, .blog-grid, .perks { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: repeat(3, 1fr); row-gap: 26px; }
-  .hero-grid, .about-hero, .contact-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero-grid, .about-hero, .contact-grid, .footer-grid, .featured { grid-template-columns: 1fr; }
   .hero-art { order: -1; }
   .ring.r2, .ring.r3 { display: none; }
   .float-card.fc3 { display: none; }
@@ -965,25 +1083,45 @@ ul { list-style: none; }
   .stat-div { display: none; }
 }
 
-@media (max-width: 640px) {
+/* Navbar switches to the hamburger pattern below 1100px, not 640px.
+   The full desktop row (144px logo + 7 nav links + theme toggle + CTA
+   button) needs ~875px of content width just for itself — below ~960px
+   viewport it no longer fits and was overflowing/crushing the logo. Cutoff
+   raised to 1100px to give tablets breathing room per spec. */
+@media (max-width: 1099px) {
+  /* Shrink the navbar + logo — 150px/144px was sized for desktop and ate
+     a huge share of a small/medium viewport's height/width. */
+  .nav-inner { height: 76px; }
+  .navbar--compact .nav-inner { height: 64px; }
+  .brand .logo { height: 46px; }
+  .navbar--compact .brand .logo { height: 38px; }
+
+  /* Anchored to the navbar itself (top:100%) instead of a hardcoded pixel
+     offset, so the dropdown always sits flush under the navbar no matter
+     its current height (default or scrolled/compact). */
   .nav-links {
-    position: fixed; top: 140px; left: 0; right: 0;
+    position: absolute; top: 100%; left: 0; right: 0;
     flex-direction: column; gap: 0; background: var(--surface); border-bottom: 1px solid var(--border);
     transform: translateY(-150%); transition: transform .3s ease; padding: 10px 0; z-index: 999;
+    max-height: calc(100vh - 76px); overflow-y: auto;
   }
   .nav-links.open { transform: translateY(0); }
   .nav-links a { padding: 14px 22px; width: 100%; }
-  .nav-cta .btn { display: none; }
+  .nav-cta { gap: 10px; }
+  .nav-cta .btn.nav-cta-btn { padding: 10px 16px; font-size: .84rem; }
   .hamburger { display: flex; }
+}
+
+@media (max-width: 640px) {
   .cards, .stats-grid, .mvv, .blog-grid, .perks, .form-row { grid-template-columns: 1fr; }
   .bento { grid-template-columns: 1fr; }
   .bento-large { grid-column: span 1; }
-  .process-flow { overflow-x: auto; overflow-y: visible; }
-  .pflow-ring-wrap { width: 54px; height: 54px; }
-  .pflow-icon-wrap { width: 50px; height: 50px; font-size: 1.2rem; }
-  .pflow-rail { top: calc(32px + 27px); }
-  .pflow-tab { font-size: .6rem; padding: 3px 8px; }
-  .process-grid { grid-template-columns: 1fr; }
+  .process-flow { padding: 26px 14px 18px; gap: 22px 6px; }
+  .pflow-node { width: 30%; }
+  .pflow-ring-wrap { width: 52px; height: 52px; }
+  .pflow-icon-wrap { width: 48px; height: 48px; font-size: 1.2rem; }
+  .pflow-rail { display: none; }
+  .pflow-tab { font-size: .62rem; padding: 3px 8px; }
   .steps { grid-template-columns: repeat(2, 1fr); }
   .job { flex-direction: column; align-items: flex-start; }
   .cursor-dot, .cursor-ring { display: none; }
@@ -991,4 +1129,28 @@ ul { list-style: none; }
   .orb-container { width: 280px; height: 280px; }
   .hero-orb { width: 180px; height: 180px; }
   .float-card { display: none; }
+
+  /* Hero — the desktop paddings were tuned for large viewports and left
+     too little room for content on phones. (.hero-3d-wrap height is fluid
+     via clamp() now, so it no longer needs a fixed mobile override.) */
+  .hero-grid { padding: 56px 0 44px; gap: 32px; }
+
+  /* Horizontal-scroll services showcase — 60px side padding and a fixed
+     340px card both ate into content width on narrow phones. */
+  .h-scroll-head { padding: 0 20px; }
+  .h-scroll-head h2 { font-size: clamp(1.4rem, 6vw, 2rem); }
+  .h-scroll-viewport { padding-left: 20px; }
+  .h-scroll-progress-wrap { margin: 20px 20px 0; }
+}
+
+@media (max-width: 400px) {
+  .nav-cta { gap: 8px; }
+  .nav-cta .btn.nav-cta-btn { padding: 9px 12px; font-size: .78rem; }
+}
+
+/* Buttons carry dynamic-length labels (plan names, CTA copy) — keep them
+   from being visually clipped by .btn's overflow:hidden on the narrowest
+   phones where a full-width button no longer fits a single nowrap line. */
+@media (max-width: 480px) {
+  .btn { white-space: normal; text-align: center; line-height: 1.3; }
 }

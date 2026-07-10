@@ -21,10 +21,10 @@ export default function Footer() {
             </Link>
             <p className="about">We combine creativity and AI to help brands grow faster and smarter in the digital world.</p>
             <div className="socials">
-              <a href="#" aria-label="Facebook">f</a>
-              <a href="#" aria-label="Twitter">𝕏</a>
-              <a href="#" aria-label="Instagram">◎</a>
-              <a href="#" aria-label="YouTube">▶</a>
+              <a href="https://www.facebook.com/profile.php?id=61590730171594" target="_blank" rel="noopener noreferrer" aria-label="Facebook">f</a>
+              <a href="https://x.com/AdgorithLab" target="_blank" rel="noopener noreferrer" aria-label="Twitter">𝕏</a>
+              <a href="https://www.instagram.com/vorldxadgorithm/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Instagram">◎</a>
+              <a href="https://www.youtube.com/channel/UCaNks7AB4elGsrqWXicIz3w" target="_blank" rel="noopener noreferrer" aria-label="YouTube">▶</a>
             </div>
           </div>
           <div>

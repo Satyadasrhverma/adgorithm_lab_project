@@ -7,6 +7,10 @@ export default {
   ],
   corePlugins: {
     preflight: false, // keep existing CSS untouched
+    container: false, // css/style.css already defines .container (1180px cap, always centered) —
+                       // Tailwind's own breakpoint-based .container utility was loading after it and
+                       // silently overriding the max-width at 1024/1280/1536px, making every section's
+                       // width jump around inconsistently instead of holding a steady 1180px cap.
   },
   theme: {
     extend: {

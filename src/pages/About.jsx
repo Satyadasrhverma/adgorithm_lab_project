@@ -9,6 +9,59 @@ const page = {
   exit:    { opacity: 0, y: -10, transition: { duration: 0.2 } },
 }
 
+function HookIcon({ type }) {
+  const gid = `hookGrad-${type}`
+  const gradients = {
+    rocket: ['#22d3ee', '#6366f1'],
+    target: ['#38bdf8', '#a855f7'],
+    bolt:   ['#facc15', '#f97316'],
+    heart:  ['#f97316', '#a855f7'],
+  }
+  const [c1, c2] = gradients[type]
+
+  return (
+    <svg className="afc-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id={gid} x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor={c1} />
+          <stop offset="100%" stopColor={c2} />
+        </linearGradient>
+      </defs>
+
+      {type === 'rocket' && (
+        <g stroke={`url(#${gid})`} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2.2c2.7 2.4 4.3 5.8 4.3 9.3 0 2.6-1.3 4.6-2.1 5.6a1 1 0 0 1-1.5 0c-.8-1-2.1-3-2.1-5.6 0-3.5 1.6-6.9 4.3-9.3z" fill={`url(#${gid})`} fillOpacity=".18" />
+          <circle cx="12" cy="10.4" r="1.5" fill={`url(#${gid})`} stroke="none" />
+          <path d="M8.4 13.2 5.6 16.4l2.7-.6" fill="none" />
+          <path d="M15.6 13.2l2.8 3.2-2.7-.6" fill="none" />
+          <path d="M10.3 18.6 12 22l1.7-3.4" fill="none" strokeWidth="1.4" />
+        </g>
+      )}
+
+      {type === 'target' && (
+        <g stroke={`url(#${gid})`} strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="10.5" cy="13.5" r="7.7" strokeWidth="1.5" />
+          <circle cx="10.5" cy="13.5" r="4.8" strokeWidth="1.5" />
+          <circle cx="10.5" cy="13.5" r="1.9" fill={`url(#${gid})`} stroke="none" />
+          <path d="M21.5 2.5 12.6 11.4" strokeWidth="1.6" />
+          <path d="M21.5 2.5 17.6 2.9 21.1 6.4z" fill={`url(#${gid})`} stroke="none" />
+        </g>
+      )}
+
+      {type === 'bolt' && (
+        <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" fill={`url(#${gid})`} stroke={`url(#${gid})`} strokeWidth="1.1" strokeLinejoin="round" />
+      )}
+
+      {type === 'heart' && (
+        <g>
+          <path d="M12 20.2s-7-4.3-9.3-8.7C1.2 8.6 2.5 4.9 6 4.4c2-.3 3.7.7 4.7 2.1a5.4 5.4 0 0 1 1.3 0c1-1.4 2.7-2.4 4.7-2.1 3.5.5 4.8 4.2 3.3 7.1-2.3 4.4-9.3 8.7-9.3 8.7z" fill={`url(#${gid})`} fillOpacity=".85" />
+          <path d="M8.4 13.6c.9.9 2.2 1 3.1.2M10.9 15.9c.9.9 2.2 1 3.1.2M13.4 18.1c.9.9 2.1 1 3 .2" stroke="#0b0f1f" strokeWidth="1.1" strokeLinecap="round" opacity=".55" />
+        </g>
+      )}
+    </svg>
+  )
+}
+
 const MVV = [
   {
     icon: '◎', title: 'Our Mission', color: '#6366f1',
@@ -40,9 +93,16 @@ const STATS = [
   { count: '95%',  label: 'Client Retention' },
 ]
 
+const FOUNDER_PILLARS = [
+  { icon: '👁', title: 'Our Vision', desc: 'To be a global AI-first innovation company that empowers businesses to grow smarter and faster.' },
+  { icon: '🎯', title: 'Our Mission', desc: 'To bridge the gap between strategy and technology through AI, creativity, and automation.' },
+  { icon: '💎', title: 'Our Values', desc: 'Innovation, integrity, impact, and a commitment to deliver excellence in everything we do.' },
+  { icon: '👥', title: 'Our Promise', desc: "We don't just deliver solutions, we deliver results that transform businesses." },
+]
+
 const DETAIL_SECTIONS = [
   {
-    icon: '🚀', label: 'What We Do',
+    icon: '/what_we_do_header.png', label: 'What We Do',
     color: '#6366f1',
     items: [
       'Content creation — video, design, copy that converts',
@@ -52,7 +112,7 @@ const DETAIL_SECTIONS = [
     ],
   },
   {
-    icon: '⚡', label: 'Why Choose Us',
+    icon: '/why_choose_header.png', label: 'Why Choose Us',
     color: '#06b6d4',
     items: [
       'AI-First — We amplify every campaign with cutting-edge AI',
@@ -63,7 +123,7 @@ const DETAIL_SECTIONS = [
     ],
   },
   {
-    icon: '🌟', label: 'Why Work With Us',
+    icon: '/why_work_header.png', label: 'Why Work With Us',
     color: '#a855f7',
     items: [
       'Build at the intersection of creativity and AI',
@@ -148,10 +208,10 @@ export default function About() {
                 Not just an agency. <span className="gradient-text">Your growth engine.</span>
               </h3>
               <ul className="afc-hooks">
-                <li><span>🚀</span> AI + creativity, under one roof</li>
-                <li><span>🎯</span> We don't pitch — we deliver proof</li>
-                <li><span>⚡</span> 48h turnaround, zero compromises</li>
-                <li><span>🤝</span> Your success is our obsession</li>
+                <li><HookIcon type="rocket" /> AI + creativity, under one roof</li>
+                <li><HookIcon type="target" /> We don't pitch — we deliver proof</li>
+                <li><HookIcon type="bolt" /> 48h turnaround, zero compromises</li>
+                <li><HookIcon type="heart" /> Your success is our obsession</li>
               </ul>
             </div>
           </motion.div>
@@ -196,7 +256,7 @@ export default function About() {
             <p>We're a next-gen content &amp; AI company helping brands grow with creative storytelling, intelligent automation and performance marketing — all under one roof.</p>
           </div>
           <div className="about-detail-grid">
-            {DETAIL_SECTIONS.map(({ label, color, items }, i) => (
+            {DETAIL_SECTIONS.map(({ label, color, items, icon }, i) => (
               <motion.div
                 key={label}
                 className="about-detail-card"
@@ -206,6 +266,7 @@ export default function About() {
                 transition={{ delay: i * 0.1, duration: 0.5 }}
               >
                 <div className="afd-section-head">
+                  <img className="afd-icon" src={icon} alt="" aria-hidden="true" />
                   <h4 style={{ color }}>{label}</h4>
                 </div>
                 <ul className="afd-list">
@@ -226,6 +287,60 @@ export default function About() {
             <Link to="/services" className="btn btn-outline">
               Explore Services
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Founder's Message */}
+      <section className="section">
+        <div className="container">
+          <div className="section-head">
+            <span className="eyebrow">Founder's Message</span>
+          </div>
+          <div className="founder-grid">
+            <motion.div
+              className="founder-photo-wrap"
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6 }}
+            >
+              <img src="/sir.jpeg" alt="Prakash Chandra — Founder & CEO, Adgorithm" className="founder-photo" />
+            </motion.div>
+            <motion.div
+              className="founder-content"
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <h2>From Vision to Impact.<br />That's <span style={{ color: '#a855f7' }}>Our Promise.</span></h2>
+              <p>Adgorithm was founded with a simple belief – technology should solve real business problems and create meaningful impact.</p>
+              <p>In today's AI-driven world, businesses need more than just tools; they need the right strategy, creativity, and innovation to stay ahead. We combine AI, automation, data, and design to build intelligent solutions that drive measurable growth.</p>
+              <p>We are not just a service provider; we are your long-term growth partner. Every project we take on is a step towards building smarter businesses and a better future.</p>
+              <p className="founder-cta-line">Let's build the future together.</p>
+              <img src="/sign.png" alt="Prakash Chandra signature" className="founder-signature" />
+              <div className="founder-name">Prakash Chandra</div>
+              <div className="founder-title">Founder &amp; CEO, Adgorithm</div>
+            </motion.div>
+          </div>
+          <div className="founder-pillars">
+            {FOUNDER_PILLARS.map(({ icon, title, desc }, i) => (
+              <motion.div
+                key={title}
+                className="founder-pillar"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ delay: i * 0.08, duration: 0.5 }}
+              >
+                <span className="founder-pillar-icon">{icon}</span>
+                <div>
+                  <h4>{title}</h4>
+                  <p>{desc}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
